@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Завантаження текстового файлу</title>
+</head>
+<body>
+    <h1>Завантаження текстового файлу</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="user_file" accept=".txt" required>
+        <input type="text" name="file_desc" placeholder="Опис файлу (необов’язково)">
+        <button type="submit">Завантажити</button>
+    </form>
+    {% if message %}
+        <p class="{{ 'message' if 'успішно' in message else 'error' }}">{{ message }}</p>
+    {% endif %}
+    {% if content %}
+        <h3>Вміст файлу:</h3>
+        <pre>{{ content }}</pre>
+    {% endif %}
+</body>
+</html>

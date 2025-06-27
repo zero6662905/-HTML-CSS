@@ -1,47 +1,34 @@
-from flask import Flask, render_template, url_for, redirect, abort
-import random as rnd
+from flask import Flask, render_template, request
+import os
 
 app = Flask(__name__)
 
-films = [
-    {
-        "id": 0,
-        "title": "Avatar",
-        "description": "Епічна історія про Джейка Саллі, паралізованого морпіха, який приєднується до програми 'Аватар' на планеті Пандора. Він закохується в місцеву жительку Нейтірі та бореться за збереження її народу від людської колонізації. Фільм відомий революційними 3D-ефектами та екологічними темами."
-    },
-    {
-        "id": 1,
-        "title": "Avengers: Endgame",
-        "description": "Завершення саги 'Месники' у MCU. Після знищення половини населення Таносом герої, включно з Тоні Старком і Капітаном Америкою, об’єднуються для подорожі в часі, щоб повернути втрачене. Фільм славиться емоційними моментами та масштабними битвами."
-    },
-    {
-        "id": 2,
-        "title": "Avatar: The Way of Water",
-        "description": "Продовження 'Аватара', де Джейк і Нейтірі захищають свою сім’ю від нової загрози на Пандорі. Фільм фокусується на підводному світі та клані Меткайна, вражаючи візуальними ефектами та новими технологіями зйомки."
-    },
-    {
-        "id": 3,
-        "title": "Titanic",
-        "description": "Історія кохання Джека та Роуз на борту 'Титаніка', приреченого лайнера. Поєднання історичної драми, романтики та трагедії зробило фільм культурним феноменом, а саундтрек Селін Діон став культовим."
-    },
-    {
-        "id": 4,
-        "title": "Star Wars: The Force Awakens",
-        "description": "Повернення франшизи 'Зоряні війни' з новими героями (Рей, Фінн, По) та поверненням класичних персонажів, як Хан Соло. Фільм розповідає про боротьбу Опору проти Першого Ордену, поєднуючи ностальгію з новою історією."
-    }
-]
-film_id = rnd.randint(0, len(films) - 1)
+FILES_PATH = 'static/users_files'
 
-@app.route('/')
-def home():
-    return render_template("index_2.html", films=films)
 
-@app.route('/films/<int:id>/')
-def film_profile(id):
-    if id < 0 or id >= len(films):
-        abort(404)
-    film = films[id]
-    return render_template("film.html", film=film)
+if not os.path.exists(FILES_PATH):
+    os.makedirs(FILES_PATH)
+
+@app.route('/', methods=['GET', 'POST'])
+def f_page_1():
+    if request.method == 'GET':
+        return render_template('index.html')
+
+    user_file = request.files.get('user_file')
+    file_desc = request.form.get('file_desc')
+
+    if user_file and user_file.filename.endswith('.txt'):
+        file_path = os.path.join(FILES_PATH, user_file.filename)
+        user_file.save(file_path)
+
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                file_content = f.read()
+            return render_template('index.html', message='Файл успішно завантажено!', content=file_content)
+        except Exception as e:
+            return render_template('index.html', message=f'Помилка читання файлу: {str(e)}')
+    else:
+        return render_template('index.html', message='Будь ласка, завантажте текстовий файл (.txt)')
 
 if __name__ == '__main__':
     app.run(debug=True)
