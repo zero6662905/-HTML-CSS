@@ -1,5 +1,5 @@
 import asyncio
-from Participant import Note
+from models.Participant import Note
 from settings import Base, async_session, async_engine
 
 async def create_db():
