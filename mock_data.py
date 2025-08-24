@@ -1,6 +1,6 @@
 import asyncio
 
-from models import User
+from models import Animals
 from settings import Base, async_engine, async_session, api_config
 
 

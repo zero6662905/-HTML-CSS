@@ -4,15 +4,15 @@ from typing import Optional
 class AnimalBase(BaseModel):
     name: str
     age: int
-    adopted:str
+    adopted: str | None
+    health_status: str
 
-class AnimalCreate(AnimalBase):
-    pass
 
 class AnimalUpdate(BaseModel):
     name: Optional[str] = None
     age: Optional[int] = None
     adopted: Optional[str] = None
+    health_status: Optional[str] = "healthy"
 
 class AnimalInDB(AnimalBase):
     id: int

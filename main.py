@@ -12,6 +12,8 @@ app = FastAPI(docs_url="/")
 
 @app.post("/animal", response_model=AnimalOut)
 async def create_user(animal: AnimalBase, db: AsyncSession = Depends(get_db)):
+    if animal.age < 0:
+        raise HTTPException(status_code=400, detail="Age cannot be negative")
     new_animal = Animals(**animal.model_dump())
     db.add(new_animal)
     await db.commit()
