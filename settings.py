@@ -1,14 +1,12 @@
 import os
-
 import dotenv
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncAttrs, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
 dotenv.load_dotenv()
 
-
 class DatabaseConfig:
-    DATABASE_NAME = os.getenv("DATABASE_NAME", "alembic_async_db")
+    DATABASE_NAME = os.getenv("DATABASE_NAME")
 
     SECRET_KEY = os.getenv("SECRET_KEY")
 
@@ -21,9 +19,6 @@ class DatabaseConfig:
 
 api_config = DatabaseConfig()
 
-
-# Налаштування бази даних Postgres
-# engine = create_engine(api_config.uri_postgres(), echo=True)
 async_engine: AsyncEngine = create_async_engine(api_config.uri_sqlite(), echo=True)
 async_session = async_sessionmaker(bind=async_engine)
 

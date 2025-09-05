@@ -1,1 +1,1 @@
-from .animal import *
+from .models import *
